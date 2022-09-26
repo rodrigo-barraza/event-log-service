@@ -10,7 +10,7 @@ const PostEvent = () => {
         const response = new ResponseClass(res);
         const request = new RequestClass(req);
         const headers = {
-            ip: request.headers('x-real-ip') || request.connection('remoteAddress'),
+            ip: request.headers('x-forwarded-for') || request.connection('remoteAddress'),
             session: request.headers('session'),
             local: request.headers('local'),
         };
