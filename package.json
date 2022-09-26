@@ -1,0 +1,23 @@
+{
+  "name": "event-log-service",
+  "version": "1.0.0",
+  "description": "Rodrigo's Event Log Service",
+  "main": "service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "author": "Rodrigo Barraza",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.1",
+    "morgan": "^1.10.0"
+  }
+}
