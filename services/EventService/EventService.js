@@ -1,5 +1,5 @@
 const EventService = (router) => {
-    const resourceName = 'event-service';
+    const resourceName = 'session-service';
     const postEvent = require('./routes/PostEvent')();
     const postSession = require('./routes/PostSession')();
 
