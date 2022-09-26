@@ -9,7 +9,7 @@ class ResponseClass {
             success: true,
             message: message
         }
-        return this.response.status(statusCode).json(successObject);
+        return this.response.status(statusCode).send('lub, dub');
     };
     sendSuccessData(object, code) {
         const statusCode = code || 200;
