@@ -19,6 +19,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+console.log(`connecting to: mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_TABLE}?retryWrites=true&w=majority`);
 app.listen(process.env.SERVER_PORT, () => {
     mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_TABLE}?retryWrites=true&w=majority`);
     mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
