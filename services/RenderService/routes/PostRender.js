@@ -2,6 +2,7 @@
 const EventsEventEmitter = require('events').EventEmitter;
 const ResponseClass = require.main.require('./classes/ResponseClass');
 const RequestClass = require.main.require('./classes/RequestClass');
+const RenderController = require.main.require('./controllers/RenderController');
 
 const PostRender = () => {
     return (req, res) => {
@@ -34,7 +35,7 @@ const PostRender = () => {
             const myHeaders = new Headers({
                 'Content-Type': 'application/json'
             })
-            const requestBody = JSON.stringify({
+            const requestBody = {
                 prompt: body.prompt,
                 // negative_prompt: "ugly, disfigured, deformed, anime, illustration, drawing",
                 steps: 20,
@@ -43,11 +44,12 @@ const PostRender = () => {
                 height: 768,
                 sampler_name: body.sampler_name,
                 cfg_scale: body.cfg_scale,
-            });
+            };
+            const stringifiedRequestBody = JSON.stringify(requestBody);
             const requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
-                body: requestBody,
+                body: stringifiedRequestBody,
                 redirect: 'follow'
             };
 
@@ -61,13 +63,19 @@ const PostRender = () => {
             .then(result => {
                 const parsedResult = JSON.parse(result)
                 parsedResult.info = JSON.parse(parsedResult.info)
+                EventEmitter.emit('insertRender', parsedResult.images[0], requestBody);
                 response.sendSuccessData(parsedResult.images[0])
             })
             .catch(error => response.sendError(error));
         }
 
+        function insertRender(base64Image, requestBody) {
+            RenderController.insertRender(base64Image, requestBody.prompt, requestBody.sampler_name, requestBody.cfg_scale, headers)
+        }
+
         EventEmitter.on('verify-parameters', verifyParameters);
         EventEmitter.on('postRender', postRender);
+        EventEmitter.on('insertRender', insertRender);
         EventEmitter.emit('verify-parameters');
     }
 };
