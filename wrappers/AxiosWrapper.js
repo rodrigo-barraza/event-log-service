@@ -11,7 +11,6 @@ const AxiosWrapper = {
             json: true,
         })
         .then(function (response) {
-            console.log(response);
         });
     },
     get(url, body, headers, callback) {
