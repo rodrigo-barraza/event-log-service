@@ -54,8 +54,20 @@ const RenderController = {
     getRender: async (limit = 1) => {
         let data, error, response;
         try {
-            response = await RenderModel.find({}, 'image prompt -_id').sort({ _id: -1 }).limit(limit)
+            response = await RenderModel.find({}).sort({ _id: -1 }).limit(limit)
             if (response.length) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getRenderByCountId: async (countField) => {
+        let data, error, response;
+        try {
+            response = await RenderModel.findOne({ count: Number(countField) })
+            if (response) {
                 data = response
             }
         } catch (err) {

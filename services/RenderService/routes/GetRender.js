@@ -14,8 +14,9 @@ const GetRender = () => {
             session: request.headers('session'),
             local: request.headers('local'),
         };
+
         const query = {
-            limit: request.query('limit')
+            id: request.query('id')
         }
 
         function verifyParameters() {
@@ -28,12 +29,36 @@ const GetRender = () => {
         }
 
         async function getRender() {
-            const { data } = await RenderController.getLatestRenders(query.limit)
-            if (data) {
-                const latestRendersObject = {
-                    images: data,
+            console.log(query.id);
+            if (query.id) {
+                const getRender = await RenderController.getRenderByCountId(query.id)
+                console.log(getRender)
+                if (getRender.data) {
+                    const latestRendersObject = {
+                        image: getRender.data.image,
+                        style: getRender.data.style,
+                        cfg: getRender.data.cfg,
+                        prompt: getRender.data.prompt,
+                        sampler: getRender.data.sampler,
+                        createdAt: getRender.data.createdAt,
+                        count: getRender.data.count
+                    }
+                    response.sendSuccessData(latestRendersObject)
                 }
-                response.sendSuccessData(latestRendersObject)
+            } else {
+                const getRandom = await RenderController.getRandom()
+                if (getRandom.data) {
+                    const latestRendersObject = {
+                        image: getRandom.data.image,
+                        style: getRandom.data.style,
+                        cfg: getRandom.data.cfg,
+                        prompt: getRandom.data.prompt,
+                        sampler: getRandom.data.sampler,
+                        createdAt: getRandom.data.createdAt,
+                        count: getRandom.data.count
+                    }
+                    response.sendSuccessData(latestRendersObject)
+                }
             }
         }
 
