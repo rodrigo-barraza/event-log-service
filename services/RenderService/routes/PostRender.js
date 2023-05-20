@@ -35,7 +35,6 @@ const PostRender = () => {
         }
 
         async function postRender() {
-            console.log(body.style)
             try {
                 let fullPrompt = body.prompt;
                 let fullNegativePrompt = body.negative_prompt;
@@ -83,7 +82,6 @@ const PostRender = () => {
                 let countRenders = await RenderController.countRenders()
                 const count = countRenders.data + 1;
                 let imageUrl = await AWSWrapper.imageUploadBase64(base64Image)
-                console.log(body.style)
                 let insertRender = await RenderController.insertRender(
                     imageUrl.replace('s3.us-west-2.amazonaws.com/', ''), 
                     count, 

@@ -69,8 +69,6 @@ const AxiosWrapper = {
             headers: headers,
             json: true,
         }, (httpError, httpResponse, responseBody) => {
-            // console.log('form', form);
-            // console.log('responseBody', responseBody);
             callback(httpError, responseBody);
         });
     },

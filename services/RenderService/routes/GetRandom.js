@@ -42,7 +42,7 @@ const GetRandom = () => {
 
         EventEmitter.on('verify-parameters', verifyParameters);
         EventEmitter.on('getRandom', getRandom);
-        EventEmitter.emit('verify-parameters');
+        EventEmitter.emit('getRandom');
     }
 };
 

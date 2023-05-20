@@ -29,11 +29,9 @@ const GetRender = () => {
         }
 
         async function getRender() {
-            console.log(query.id);
             if (query.id) {
                 const getRender = await RenderController.getRenderByCountId(query.id)
-                console.log(getRender)
-                if (getRender.data) {
+                if (getRender?.data) {
                     const latestRendersObject = {
                         image: getRender.data.image,
                         style: getRender.data.style,
@@ -44,6 +42,8 @@ const GetRender = () => {
                         count: getRender.data.count
                     }
                     response.sendSuccessData(latestRendersObject)
+                } else {
+                    response.sendError('No render found.')
                 }
             } else {
                 const getRandom = await RenderController.getRandom()
@@ -64,7 +64,7 @@ const GetRender = () => {
 
         EventEmitter.on('verify-parameters', verifyParameters);
         EventEmitter.on('getRender', getRender);
-        EventEmitter.emit('verify-parameters');
+        EventEmitter.emit('getRender');
     }
 };
 
