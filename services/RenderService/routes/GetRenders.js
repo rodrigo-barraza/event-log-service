@@ -28,10 +28,10 @@ const GetRenders = () => {
         }
 
         async function getRenders() {
-            const { data } = await RenderController.getLatestRenders(query.limit)
-            if (data) {
+            const getLatestRenders = await RenderController.getRandoms(query.limit)
+            if (getLatestRenders.data) {
                 const latestRendersObject = {
-                    images: data,
+                    images: getLatestRenders.data,
                 }
                 response.sendSuccessData(latestRendersObject)
             }
@@ -39,7 +39,7 @@ const GetRenders = () => {
 
         EventEmitter.on('verify-parameters', verifyParameters);
         EventEmitter.on('getRenders', getRenders);
-        EventEmitter.emit('verify-parameters');
+        EventEmitter.emit('getRenders');
     }
 };
 

@@ -42,7 +42,7 @@ const RenderController = {
     getLatestRenders: async (limit = 1) => {
         let data, error, response;
         try {
-            response = await RenderModel.find({}, 'image prompt -_id').sort({ _id: -1 }).limit(limit)
+            response = await RenderModel.find({}).sort({ _id: -1 }).limit(limit)
             if (response.length) {
                 data = response
             }
@@ -79,6 +79,23 @@ const RenderController = {
         let data, error, response;
         try {
             response = await RenderModel.random()
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getRandoms: async (limit = 1) => {
+        let data, error, response;
+        let sizeLimit = limit <= 12 ? limit : 12;
+        try {
+            response = await RenderModel.aggregate([{
+                $sample: {
+                    size: Number(sizeLimit)
+                }
+            }]);
             if (response) {
                 data = response
             }
