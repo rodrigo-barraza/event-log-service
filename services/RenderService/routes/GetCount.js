@@ -4,7 +4,7 @@ const ResponseClass = require.main.require('./classes/ResponseClass');
 const RequestClass = require.main.require('./classes/RequestClass');
 const RenderController = require.main.require('./controllers/RenderController');
 
-const GetRandom = () => {
+const GetCount = () => {
     return (req, res) => {
         const EventEmitter = new EventsEventEmitter();
         const response = new ResponseClass(res);
@@ -18,33 +18,26 @@ const GetRandom = () => {
         function verifyParameters() {
             const hasRequiredParameters = headers.session;
             if (hasRequiredParameters) {
-                EventEmitter.emit('getRandom');
+                EventEmitter.emit('getRenders');
             } else {
                 return response.sendError('Missing required parameters.');
             }
         }
 
-        async function getRandom() {
-            const getRandom = await RenderController.getRandom()
-            if (getRandom.data) {
+        async function getRenders() {
+            const countRenders = await RenderController.countRenders()
+            if (countRenders.data) {
                 const latestRendersObject = {
-                    image: getRandom.data.image,
-                    style: getRandom.data.style,
-                    cfg: getRandom.data.cfg,
-                    prompt: getRandom.data.prompt,
-                    sampler: getRandom.data.sampler,
-                    createdAt: getRandom.data.createdAt,
-                    count: getRandom.data.count,
-                    id: getRandom.data.id
+                    count: countRenders.data,
                 }
                 response.sendSuccessData(latestRendersObject)
             }
         }
 
         EventEmitter.on('verify-parameters', verifyParameters);
-        EventEmitter.on('getRandom', getRandom);
-        EventEmitter.emit('getRandom');
+        EventEmitter.on('getRenders', getRenders);
+        EventEmitter.emit('getRenders');
     }
 };
 
-module.exports = GetRandom;
+module.exports = GetCount;

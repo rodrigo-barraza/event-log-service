@@ -1,3 +1,5 @@
+const { nanoid } = require('nanoid');
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const RenderSchema = new Schema({
@@ -10,6 +12,11 @@ const RenderSchema = new Schema({
     cfg: Number,
     style: String,
     count: Number,
+    id: {
+        type: String,
+        // `Date.now()` returns the current unix timestamp as a number
+        default: nanoid(11)
+    },
     ip: String,
     versionKey: false,
 },{

@@ -1,5 +1,6 @@
 'use strict';
 const RenderModel = require.main.require('./models/RenderModel');
+const { nanoid } = require('nanoid');
 
 const RenderController = {
     insertRender: async (image, count, prompt, negativePrompt, sampler, cfg, style, headers) => {    
@@ -75,6 +76,18 @@ const RenderController = {
         }
         return { data, error, response }
     },
+    getRenderById: async (id) => {
+        let data, error, response;
+        try {
+            response = await RenderModel.findOne({ id: id })
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
     getRandom: async () => {
         let data, error, response;
         try {
@@ -104,6 +117,22 @@ const RenderController = {
         }
         return { data, error, response }
     },
+    updateRenders: async () => {
+        let data, error, response;
+        try {
+            response = await RenderModel.find({});
+            response.forEach((render) => {
+                render.id = nanoid(11);
+                render.save();
+            });
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    }
 
 };
 

@@ -30,7 +30,7 @@ const GetRender = () => {
 
         async function getRender() {
             if (query.id) {
-                const getRender = await RenderController.getRenderByCountId(query.id)
+                const getRender = await RenderController.getRenderById(query.id)
                 if (getRender?.data) {
                     const latestRendersObject = {
                         image: getRender.data.image,
@@ -39,7 +39,8 @@ const GetRender = () => {
                         prompt: getRender.data.prompt,
                         sampler: getRender.data.sampler,
                         createdAt: getRender.data.createdAt,
-                        count: getRender.data.count
+                        count: getRender.data.count,
+                        id: getRender.data.id
                     }
                     response.sendSuccessData(latestRendersObject)
                 } else {
@@ -55,7 +56,8 @@ const GetRender = () => {
                         prompt: getRandom.data.prompt,
                         sampler: getRandom.data.sampler,
                         createdAt: getRandom.data.createdAt,
-                        count: getRandom.data.count
+                        count: getRandom.data.count,
+                        id: getRandom.data.id
                     }
                     response.sendSuccessData(latestRendersObject)
                 }
