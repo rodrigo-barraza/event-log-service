@@ -33,7 +33,6 @@ const PostRender = () => {
                 return response.sendError('Missing required parameters.');
             }
         }
-
         async function postRender() {
             try {
                 let fullPrompt = body.prompt;
@@ -99,7 +98,8 @@ const PostRender = () => {
                     prompt: insertRender.data.prompt,
                     sampler: insertRender.data.sampler,
                     createdAt: insertRender.data.createdAt,
-                    count: count
+                    count: count,
+                    id: insertRender.data.createdAt
                 }
                 response.sendSuccessData(renderResponse)
             } catch (err) {
