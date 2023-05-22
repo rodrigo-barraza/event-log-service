@@ -14,8 +14,9 @@ const RenderSchema = new Schema({
     count: Number,
     id: {
         type: String,
-        // `Date.now()` returns the current unix timestamp as a number
-        default: nanoid(11)
+        default: () => {
+            return nanoid(11)
+        }
     },
     ip: String,
     versionKey: false,
