@@ -99,7 +99,7 @@ const PostRender = () => {
                     sampler: insertRender.data.sampler,
                     createdAt: insertRender.data.createdAt,
                     count: count,
-                    id: insertRender.data.createdAt
+                    id: insertRender.data.id
                 }
                 response.sendSuccessData(renderResponse)
             } catch (err) {
