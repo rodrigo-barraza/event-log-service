@@ -122,7 +122,8 @@ const RenderController = {
         try {
             response = await RenderModel.find({});
             response.forEach((render) => {
-                render.id = nanoid(11);
+                render.image = render.image.replace('https://generations.rod.dev/', 'https://renders.rod.dev/')
+                // render.id = nanoid(11);
                 render.save();
             });
             if (response) {
@@ -136,7 +137,7 @@ const RenderController = {
     getRendersByIP: async (ip) => {
         let data, error, response;
         try {
-            response = await RenderModel.find({ ip: ip });
+            response = await RenderModel.find({ ip: ip }).sort({ _id: -1 });
             if (response) {
                 data = response
             }
