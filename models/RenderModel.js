@@ -19,6 +19,7 @@ const RenderSchema = new Schema({
         }
     },
     ip: String,
+    deleted: Boolean,
     versionKey: false,
 },{
     collection: 'renders',
