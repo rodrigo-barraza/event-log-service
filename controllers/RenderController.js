@@ -132,7 +132,19 @@ const RenderController = {
             error = err
         }
         return { data, error, response }
-    }
+    },
+    getRendersByIP: async (ip) => {
+        let data, error, response;
+        try {
+            response = await RenderModel.find({ ip: ip });
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
 
 };
 

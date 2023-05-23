@@ -15,19 +15,19 @@ const GetRenders = () => {
             local: request.headers('local'),
         };
         const query = {
-            limit: request.query('limit')
+            limit: request.query('limit'),
+            mode: request.query('mode'), // 'random', 'latests', 'user'
         }
 
         function verifyParameters() {
-            const hasRequiredParameters = headers.session;
-            if (hasRequiredParameters) {
-                EventEmitter.emit('getRenders');
+            if (query.mode === 'user') {
+                EventEmitter.emit('getRendersByIP');
             } else {
-                return response.sendError('Missing required parameters.');
+                EventEmitter.emit('getRandomRenders');
             }
         }
 
-        async function getRenders() {
+        async function getRandomRenders() {
             const getLatestRenders = await RenderController.getRandoms(query.limit)
             if (getLatestRenders.data) {
                 const latestRendersObject = {
@@ -37,9 +37,20 @@ const GetRenders = () => {
             }
         }
 
-        EventEmitter.on('verify-parameters', verifyParameters);
-        EventEmitter.on('getRenders', getRenders);
-        EventEmitter.emit('getRenders');
+        async function getRendersByIP() {
+            const getLatestRenders = await RenderController.getRendersByIP(headers.ip)
+            if (getLatestRenders.data) {
+                const latestRendersObject = {
+                    images: getLatestRenders.data,
+                }
+                response.sendSuccessData(latestRendersObject)
+            }
+        }
+
+        EventEmitter.on('verifyParameters', verifyParameters);
+        EventEmitter.on('getRandomRenders', getRandomRenders);
+        EventEmitter.on('getRendersByIP', getRendersByIP);
+        EventEmitter.emit('verifyParameters');
     }
 };
 
