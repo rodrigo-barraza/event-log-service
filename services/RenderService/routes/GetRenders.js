@@ -39,6 +39,8 @@ const GetRenders = () => {
 
         async function getRendersByIP() {
             const getLatestRenders = await RenderController.getRendersByIP(headers.ip)
+            console.log('IP: ', headers.ip)
+            console.log('getLatestRenders: ', getLatestRenders)
             if (getLatestRenders.data) {
                 const latestRendersObject = {
                     images: getLatestRenders.data,
