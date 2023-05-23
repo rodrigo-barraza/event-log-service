@@ -82,7 +82,7 @@ const PostRender = () => {
                 const count = countRenders.data + 1;
                 let imageUrl = await AWSWrapper.imageUploadBase64(base64Image)
                 let insertRender = await RenderController.insertRender(
-                    imageUrl.replace('s3.us-west-2.amazonaws.com/', ''), 
+                    imageUrl.replace('s3.us-west-2.amazonaws.com/', '').replace('generations.rod.dev', 'renders.rod.dev'),
                     count, 
                     body.prompt, 
                     body.negative_prompt, 
