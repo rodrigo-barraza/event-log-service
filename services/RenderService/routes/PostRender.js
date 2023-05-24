@@ -26,7 +26,7 @@ const PostRender = () => {
         }
 
         function verifyParameters() {
-            const hasRequiredParameters = headers.session && body.prompt;
+            const hasRequiredParameters = headers.ip && body.prompt;
             if (hasRequiredParameters) {
                 EventEmitter.emit('postRender');
             } else {

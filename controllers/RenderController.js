@@ -1,6 +1,6 @@
 'use strict';
 const RenderModel = require.main.require('./models/RenderModel');
-const { nanoid } = require('nanoid');
+const FavoriteModel = require.main.require('./models/FavoriteModel');
 
 const RenderController = {
     insertRender: async (image, count, prompt, negativePrompt, sampler, cfg, style, headers) => {    
@@ -52,10 +52,10 @@ const RenderController = {
         }
         return { data, error, response }
     },
-    getRender: async (limit = 1) => {
+    getRender: async (id) => {
         let data, error, response;
         try {
-            response = await RenderModel.find({}).sort({ _id: -1 }).limit(limit)
+            response = await RenderModel.find({id: id})
             if (response.length) {
                 data = response
             }
@@ -139,6 +139,90 @@ const RenderController = {
         let data, error, response;
         try {
             response = await RenderModel.find({ ip: ip, deleted: { $ne: true} }).sort({ _id: -1 });
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getFavoriteRenders: async (ip) => {
+        let data, error, response;
+        try {
+            response = await RenderModel.aggregate([
+                { $match: { ip: ip, deleted: { $ne: true } } },
+                {
+                    $lookup: {
+                        from: FavoriteModel.collection.name,
+                        let: { renderId: "$id" },
+                        pipeline: [
+                        {
+                            $project: {
+                                renderIds: {
+                                    $filter: {
+                                        input: { $objectToArray: "$renderIds" },
+                                        as: "item",
+                                        cond: { $eq: ["$$item.v", true] },
+                                    },
+                                },
+                            },
+                        },
+                        { $match: { $expr: { $in: ["$$renderId", "$renderIds.k"] } } },
+                        ],
+                        as: "favorite",
+                    },
+                },
+                {
+                $unwind: "$favorite",
+                },
+                ])
+                .exec()
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getRenders: async (ip) => {
+        let data, error, response;
+        try {
+          response = await RenderModel.aggregate([
+            { $match: { ip: ip, deleted: { $ne: true } } },
+            {
+              $lookup: {
+                from: FavoriteModel.collection.name,
+                let: { renderId: "$id" },
+                pipeline: [
+                  {
+                    $project: {
+                      renderIds: {
+                        $filter: {
+                          input: { $objectToArray: "$renderIds" },
+                          as: "item",
+                          cond: { $eq: ["$$item.v", true] },
+                        },
+                      },
+                    },
+                  },
+                  { $match: { $expr: { $in: ["$$renderId", "$renderIds.k"] } } },
+                ],
+                as: "favorite",
+              },
+            },
+            {
+              $set: {
+                favorite: {
+                  $cond: {if: { $gt: [{ $size: "$favorite" }, 0] },
+                  then: true,
+                  else: false,
+                },
+              },
+            },
+          },
+        ]).sort({ _id: -1 }).exec()
             if (response) {
                 data = response
             }
