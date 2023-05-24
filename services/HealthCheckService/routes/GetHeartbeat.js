@@ -5,7 +5,7 @@ const GetHeartbeat = () => {
     return (req, res) => {
         const response = new ResponseClass(res);
         
-        return response.sendSuccessMessage('');
+        return response.sendSuccessHeartBeat();
     }
 };
 

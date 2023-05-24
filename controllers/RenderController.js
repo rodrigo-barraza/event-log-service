@@ -122,7 +122,8 @@ const RenderController = {
         try {
             response = await RenderModel.find({});
             response.forEach((render) => {
-                render.image = render.image.replace('https://generations.rod.dev/', 'https://renders.rod.dev/')
+                render.deleted = false;
+                // render.image = render.image.replace('https://generations.rod.dev/', 'https://renders.rod.dev/')
                 // render.id = nanoid(11);
                 render.save();
             });
@@ -137,9 +138,26 @@ const RenderController = {
     getRendersByIP: async (ip) => {
         let data, error, response;
         try {
-            response = await RenderModel.find({ ip: ip }).sort({ _id: -1 });
+            response = await RenderModel.find({ ip: ip, deleted: { $ne: true} }).sort({ _id: -1 });
             if (response) {
                 data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    deleteRender: async (id, ip) => {
+        let data, error, response;
+        try {
+            response = await RenderModel.findOneAndUpdate(
+                { ip: ip, id: id }, 
+                { deleted: true })
+            console.log(response)
+            if (response) {
+                data = response
+            } else {
+                error = { message: 'Render not found' }
             }
         } catch (err) {
             error = err

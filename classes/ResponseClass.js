@@ -9,6 +9,10 @@ class ResponseClass {
             success: true,
             message: message
         }
+        return this.response.status(statusCode).send(successObject);
+    };
+    sendSuccessHeartBeat(code) {
+        const statusCode = code || 200;
         return this.response.status(statusCode).send('lub, dub');
     };
     sendSuccessData(object, code) {
