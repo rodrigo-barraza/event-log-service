@@ -100,23 +100,6 @@ const RenderController = {
         }
         return { data, error, response }
     },
-    getRandoms: async (limit = 1) => {
-        let data, error, response;
-        let sizeLimit = limit <= 12 ? limit : 12;
-        try {
-            response = await RenderModel.aggregate([{
-                $sample: {
-                    size: Number(sizeLimit)
-                }
-            }]);
-            if (response) {
-                data = response
-            }
-        } catch (err) {
-            error = err
-        }
-        return { data, error, response }
-    },
     updateRenders: async () => {
         let data, error, response;
         try {
@@ -178,6 +161,22 @@ const RenderController = {
                 },
                 ])
                 .exec()
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getRandomRenders: async (limit = 1) => {
+        let data, error, response;
+        let sizeLimit = limit <= 12 ? limit : 12;
+        try {
+            response = await RenderModel.aggregate([
+                { $match: { deleted: { $ne: true } } },
+                { $sample: { size: Number(sizeLimit) }}
+            ]);
             if (response) {
                 data = response
             }

@@ -28,7 +28,7 @@ const GetRenders = () => {
         }
 
         async function getRandomRenders() {
-            const getLatestRenders = await RenderController.getRandoms(query.limit)
+            const getLatestRenders = await RenderController.getRandomRenders(query.limit)
             if (getLatestRenders.data) {
                 const latestRendersObject = {
                     images: getLatestRenders.data,
