@@ -33,7 +33,7 @@ const GetRender = () => {
 
         async function getRender() {
             if (query.id) {
-                const getRender = await RenderController.getRenderById(query.id)
+                const getRender = await RenderController.getRenderById(query.id, headers.ip)
                 if (getRender?.data) {
                     const latestRendersObject = {
                         image: getRender.data.image,
@@ -52,7 +52,7 @@ const GetRender = () => {
                     response.sendError('No render found.')
                 }
             } else {
-                const getRandom = await RenderController.getRandomWithLikes()
+                const getRandom = await RenderController.getRandomWithLikes(query.id, headers.ip)
                 if (getRandom.data) {
                     const latestRendersObject = {
                         image: getRandom.data.image,

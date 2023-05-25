@@ -89,45 +89,50 @@ const RenderController = {
         }
         return { data, error, response }
     },
-    getRenderById: async (id) => {
+    getRenderByIdAlwaysTrue: async (id, ip) => {
         let data, error, response;
         try {
-          response = await RenderModel.aggregate([
-            { $match: { id: id } },
-            {
-              $lookup: {
-                from: LikeModel.collection.name,
-                let: { renderId: "$id" },
-                pipeline: [
-                  {
-                    $project: {
-                      renderIds: {
-                        $filter: {
-                          input: { $objectToArray: "$renderIds" },
-                          as: "item",
-                          cond: { $eq: ["$$item.v", true] },
+            response = await RenderModel.aggregate([
+                { $match: { id: id } },
+                {
+                  $lookup: {
+                    from: LikeModel.collection.name,
+                    let: { renderId: "$id" },
+                    pipeline: [
+                      {
+                        $project: {
+                          renderIds: {
+                            $filter: {
+                              input: { $objectToArray: "$renderIds" },
+                              as: "item",
+                              cond: { $eq: ["$$item.v", true] },
+                            },
+                          },
                         },
                       },
-                    },
-                  },
-                  { $match: { $expr: { $in: ["$$renderId", "$renderIds.k"] } } },
-                ],
-                as: "like",
-              },
-            },
-            {
-              $set: {
-                likes: { $size: "$like" },
-                like: {
-                  $cond: {
-                    if: { $gt: [{ $size: "$like" }, 0] },
-                    then: true,
-                    else: false,
+                      { $match: { 
+                        $expr: { 
+                            $in: ["$$renderId", "$renderIds.k"]
+                        } 
+                    }},
+                    ],
+                    as: "like",
                   },
                 },
-              },
-            },
-          ]).exec()
+                {
+                  $set: {
+                    likes: { $size: "$like" },
+                    
+                    like: {
+                        $cond: {
+                          if: { $gt: [{ $size: "$like" }, 0] },
+                          then: true,
+                          else: false,
+                        },
+                    },
+                  },
+                },
+              ]).exec()
             if (response && response.length) {
                 data = response[0]
             }
@@ -136,7 +141,64 @@ const RenderController = {
         }
         return { data, error, response }
     },
-    getRandomWithLikes: async () => {
+    getRenderById: async (id, ip) => {
+        let data, error, response;
+        try {
+            response = await RenderModel.aggregate([
+                { $match: { id: id } },
+                {
+                  $lookup: {
+                    from: LikeModel.collection.name,
+                    let: { renderId: "$id" },
+                    pipeline: [
+                      {
+                        $project: {
+                          renderIds: {
+                            $filter: {
+                              input: { $objectToArray: "$renderIds" },
+                              as: "item",
+                              cond: { $eq: ["$$item.v", true] },
+                            },
+                          },
+                          ip: 1
+                        },
+                      },
+                      { $match: { 
+                        $expr: { 
+                            $in: ["$$renderId", "$renderIds.k"]
+                        } 
+                    }},
+                    ],
+                    as: "like",
+                  },
+                },
+                {
+                  $set: {
+                    likes: { $size: "$like" }
+                  },
+                },
+              ]).exec()
+            if (response && response.length) {
+                data = response[0]
+                
+                // I need to find a better aggregate query for this, rather than doing it manually, but at least it takes some load off the mongodb server.
+                const likes = data.like;
+                const didILikeThis = false;
+                if (likes.length) {
+                    likes.forEach((eachLike) => {
+                        if (ip === eachLike.ip) {
+                            didILikeThis = true;
+                        }
+                    })
+                }
+                data.like = didILikeThis
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getRandomWithLikes: async (ip) => {
         let data, error, response;
         try {
             const randomRender = await RenderModel.random();
@@ -157,6 +219,7 @@ const RenderController = {
                                                 cond: { $eq: ["$$item.v", true] },
                                             },
                                         },
+                                        ip: 1, // Add this line to include the "ip" field
                                     },
                                 },
                                 { $match: { $expr: { $in: ["$$renderId", "$renderIds.k"] } } },
@@ -169,7 +232,20 @@ const RenderController = {
                             likes: { $size: "$like" },
                             like: {
                                 $cond: {
-                                    if: { $gt: [{ $size: "$like" }, 0] },
+                                    if: {
+                                        $gt: [
+                                            {
+                                                $size: {
+                                                    $filter: {
+                                                        input: "$like",
+                                                        as: "likeItem",
+                                                        cond: { $eq: ["$$likeItem.ip", ip] }, // Check if "ip" field matches the provided "ip" parameter
+                                                    },
+                                                },
+                                            },
+                                            0,
+                                        ],
+                                    },
                                     then: true,
                                     else: false,
                                 },
