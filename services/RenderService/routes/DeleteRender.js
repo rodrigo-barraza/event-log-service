@@ -39,7 +39,7 @@ const DeleteRender = () => {
                     return response.sendSuccessMessage('Deleted')
                 }
             } catch (err) {
-                console.log(1, err)
+                console.log(err)
             }
         }
 

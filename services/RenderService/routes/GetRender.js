@@ -45,13 +45,14 @@ const GetRender = () => {
                         count: getRender.data.count,
                         id: getRender.data.id,
                         like: getRender.data.like,
+                        likes: getRender.data.likes,
                     }
                     response.sendSuccessData(latestRendersObject)
                 } else {
                     response.sendError('No render found.')
                 }
             } else {
-                const getRandom = await RenderController.getRandom()
+                const getRandom = await RenderController.getRandomWithLikes()
                 if (getRandom.data) {
                     const latestRendersObject = {
                         image: getRandom.data.image,
@@ -63,6 +64,7 @@ const GetRender = () => {
                         count: getRandom.data.count,
                         id: getRandom.data.id,
                         like: getRandom.data.like,
+                        likes: getRandom.data.likes,
                     }
                     response.sendSuccessData(latestRendersObject)
                 }

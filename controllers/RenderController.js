@@ -117,7 +117,7 @@ const RenderController = {
             },
             {
               $set: {
-                likes: { $size: "$like" }, // Return total number of likes
+                likes: { $size: "$like" },
                 like: {
                   $cond: {
                     if: { $gt: [{ $size: "$like" }, 0] },
@@ -136,7 +136,70 @@ const RenderController = {
         }
         return { data, error, response }
     },
+    getRandomWithLikes: async () => {
+        let data, error, response;
+        try {
+            const randomRender = await RenderModel.random();
+            if (randomRender) {
+                response = await RenderModel.aggregate([
+                    { $match: { id: randomRender.id } },
+                    {
+                        $lookup: {
+                            from: LikeModel.collection.name,
+                            let: { renderId: "$id" },
+                            pipeline: [
+                                {
+                                    $project: {
+                                        renderIds: {
+                                            $filter: {
+                                                input: { $objectToArray: "$renderIds" },
+                                                as: "item",
+                                                cond: { $eq: ["$$item.v", true] },
+                                            },
+                                        },
+                                    },
+                                },
+                                { $match: { $expr: { $in: ["$$renderId", "$renderIds.k"] } } },
+                            ],
+                            as: "like",
+                        },
+                    },
+                    {
+                        $set: {
+                            likes: { $size: "$like" },
+                            like: {
+                                $cond: {
+                                    if: { $gt: [{ $size: "$like" }, 0] },
+                                    then: true,
+                                    else: false,
+                                },
+                            },
+                        },
+                    },
+                ]).exec();
+    
+                if (response && response.length) {
+                    data = response[0];
+                }
+            }
+        } catch (err) {
+            error = err;
+        }
+        return { data, error, response };
+    },
     getRandom: async () => {
+        let data, error, response;
+        try {
+            response = await RenderModel.random()
+            if (response) {
+                data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getRandom2: async () => {
         let data, error, response;
         try {
             response = await RenderModel.random()
