@@ -1,4 +1,7 @@
 'use strict';
+
+const { get } = require('http');
+
 const EventsEventEmitter = require('events').EventEmitter;
 const ResponseClass = require.main.require('./classes/ResponseClass');
 const RequestClass = require.main.require('./classes/RequestClass');
@@ -40,7 +43,8 @@ const GetRender = () => {
                         sampler: getRender.data.sampler,
                         createdAt: getRender.data.createdAt,
                         count: getRender.data.count,
-                        id: getRender.data.id
+                        id: getRender.data.id,
+                        like: getRender.data.like,
                     }
                     response.sendSuccessData(latestRendersObject)
                 } else {
@@ -57,7 +61,8 @@ const GetRender = () => {
                         sampler: getRandom.data.sampler,
                         createdAt: getRandom.data.createdAt,
                         count: getRandom.data.count,
-                        id: getRandom.data.id
+                        id: getRandom.data.id,
+                        like: getRandom.data.like,
                     }
                     response.sendSuccessData(latestRendersObject)
                 }

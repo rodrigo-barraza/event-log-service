@@ -52,7 +52,7 @@ const PostRender = () => {
                 const requestBody = {
                     prompt: fullPrompt,
                     negative_prompt: fullNegativePrompt,
-                    steps: 20,
+                    steps: 25,
                     batch_size: 1,
                     width: 768,
                     height: 768,

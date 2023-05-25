@@ -22,7 +22,6 @@ const DeleteRender = () => {
 
         function verifyParameters() {
             const hasRequiredParameters = headers.ip && body.id;
-            console.log(headers)
             if (hasRequiredParameters) {
                 EventEmitter.emit('deleteRender');
             } else {

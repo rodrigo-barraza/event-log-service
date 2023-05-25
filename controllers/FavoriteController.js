@@ -9,7 +9,6 @@ const FavoriteController = {
             const update = {};
             const options = {upsert: true, new: true, setDefaultsOnInsert: true};
             const Favorite = await FavoriteModel.findOneAndUpdate(query, update, options);
-            console.log(Favorite)
             Favorite.local = headers.local;
             Favorite.session = headers.session;
             Favorite.ip = headers.ip;

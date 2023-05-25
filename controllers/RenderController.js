@@ -1,6 +1,7 @@
 'use strict';
 const RenderModel = require.main.require('./models/RenderModel');
 const FavoriteModel = require.main.require('./models/FavoriteModel');
+const LikeModel = require.main.require('./models/LikeModel');
 
 const RenderController = {
     insertRender: async (image, count, prompt, negativePrompt, sampler, cfg, style, headers) => {    
@@ -76,12 +77,59 @@ const RenderController = {
         }
         return { data, error, response }
     },
-    getRenderById: async (id) => {
+    getRenderById2: async (id) => {
         let data, error, response;
         try {
             response = await RenderModel.findOne({ id: id })
             if (response) {
                 data = response
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
+    getRenderById: async (id) => {
+        let data, error, response;
+        try {
+          response = await RenderModel.aggregate([
+            { $match: { id: id } },
+            {
+              $lookup: {
+                from: LikeModel.collection.name,
+                let: { renderId: "$id" },
+                pipeline: [
+                  {
+                    $project: {
+                      renderIds: {
+                        $filter: {
+                          input: { $objectToArray: "$renderIds" },
+                          as: "item",
+                          cond: { $eq: ["$$item.v", true] },
+                        },
+                      },
+                    },
+                  },
+                  { $match: { $expr: { $in: ["$$renderId", "$renderIds.k"] } } },
+                ],
+                as: "like",
+              },
+            },
+            {
+              $set: {
+                likes: { $size: "$like" }, // Return total number of likes
+                like: {
+                  $cond: {
+                    if: { $gt: [{ $size: "$like" }, 0] },
+                    then: true,
+                    else: false,
+                  },
+                },
+              },
+            },
+          ]).exec()
+            if (response && response.length) {
+                data = response[0]
             }
         } catch (err) {
             error = err
@@ -222,7 +270,7 @@ const RenderController = {
             },
           },
         ]).sort({ _id: -1 }).exec()
-            if (response) {
+            if (response && response.length) {
                 data = response
             }
         } catch (err) {
@@ -236,7 +284,6 @@ const RenderController = {
             response = await RenderModel.findOneAndUpdate(
                 { ip: ip, id: id }, 
                 { deleted: true })
-            console.log(response)
             if (response) {
                 data = response
             } else {

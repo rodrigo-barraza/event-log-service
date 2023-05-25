@@ -58,7 +58,7 @@ const AWSWrapper = {
           location = Location;
           key = Key;
         } catch (error) {
-            console.log(2, error)
+            console.log(error)
         }
       
         return location;
