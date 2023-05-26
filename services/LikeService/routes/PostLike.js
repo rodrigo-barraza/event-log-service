@@ -45,7 +45,7 @@ const PostLike = () => {
                     if (body.like === 'true') {
                         await LikeController.insertLike(body.renderId, headers)
                     } else {
-                        LikeController.deleteLike(body.renderId, headers.ip)
+                        await LikeController.deleteLike(body.renderId, headers.ip)
                     }
                     response.sendSuccessData('1')
                 } else {

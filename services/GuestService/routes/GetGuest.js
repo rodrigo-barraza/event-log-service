@@ -1,11 +1,13 @@
 'use strict';
+
+const { get } = require('http');
+
 const EventsEventEmitter = require('events').EventEmitter;
 const ResponseClass = require.main.require('./classes/ResponseClass');
 const RequestClass = require.main.require('./classes/RequestClass');
-const RenderController = require.main.require('./controllers/RenderController');
 const LikeController = require.main.require('./controllers/LikeController');
 
-const DeleteRender = () => {
+const GetGuest = () => {
     return (req, res) => {
         const EventEmitter = new EventsEventEmitter();
         const response = new ResponseClass(res);
@@ -16,38 +18,30 @@ const DeleteRender = () => {
             local: request.headers('local'),
         };
 
-        const body = {
-            id: request.body('id'),
-        }
-
         function verifyParameters() {
-            const hasRequiredParameters = headers.ip && body.id;
+            const hasRequiredParameters = headers.ip;
             if (hasRequiredParameters) {
-                EventEmitter.emit('deleteRender');
+                EventEmitter.emit('getHasLikes');
             } else {
                 return response.sendError('Missing required parameters.');
             }
         }
 
-        async function deleteRender() {
-            try {
-                let deleteRender = await RenderController.deleteRender(body.id, headers.ip)
-                if (deleteRender.error) {
-                    return response.sendError(deleteRender.error.message)
-                }
-                if (deleteRender.data.id) {
-                    await LikeController.deleteLike(body.id, headers.ip)
-                    return response.sendSuccessMessage('Deleted')
-                }
-            } catch (err) {
-                console.log(err)
+        async function getHasLikes() {
+            const getHasLikes = await LikeController.getHasLikes(headers.ip)
+            const guest = {
+                likes: 0
             }
+            if (getHasLikes?.data) {
+                guest.likes = getHasLikes.data;
+            }
+            response.sendSuccessData(guest)
         }
 
         EventEmitter.on('verify-parameters', verifyParameters);
-        EventEmitter.on('deleteRender', deleteRender);
+        EventEmitter.on('getHasLikes', getHasLikes);
         EventEmitter.emit('verify-parameters');
     }
 };
 
-module.exports = DeleteRender;
+module.exports = GetGuest;

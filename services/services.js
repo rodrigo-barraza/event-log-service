@@ -6,6 +6,7 @@ const FavoriteService = require('./FavoriteService/FavoriteService');
 const LikeService = require('./LikeService/LikeService');
 const RenderService = require('./RenderService/RenderService');
 const HealthCheckService = require('./HealthCheckService/HealthCheckService');
+const GuestService = require('./GuestService/GuestService');
 
 const routes = () => {
     EventService(router);
@@ -13,6 +14,7 @@ const routes = () => {
     FavoriteService(router);
     LikeService(router);
     HealthCheckService(router);
+    GuestService(router);
     return router;
 };
 

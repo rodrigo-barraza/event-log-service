@@ -541,7 +541,6 @@ const RenderController = {
             },
             { $match: { like: { $ne: [] } } }
         ]).sort({ _id: -1 }).exec()
-            console.log(response)
             if (response && response.length) {
                 data = response
             } else {

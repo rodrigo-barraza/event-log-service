@@ -54,6 +54,30 @@ const LikeController = {
         }
         return { data, error, response }
     },
+    getHasLikes: async (ip) => {
+        let data, error, response;
+        try {
+            const query = {ip: ip};
+            const Like = await LikeModel.findOne(query);
+            const renderIds = Like.renderIds;
+            let count = 0;
+
+            for (const [key, value] of renderIds.entries()) {
+                if (value) {
+                    count++;
+                }
+            }
+
+            if (Like && Like.renderIds.size) {
+                data = count
+            } else {
+                data = 0
+            }
+        } catch (err) {
+            error = err
+        }
+        return { data, error, response }
+    },
 };
 
 module.exports = LikeController;
