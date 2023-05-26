@@ -13,6 +13,9 @@ const RenderService = (router) => {
     const getRenders = require('./routes/GetRenders')();
     router.get(`/${resourceName}/renders`, getRenders);
 
+    const getLikes = require('./routes/GetLikes')();
+    router.get(`/${resourceName}/likes`, getLikes);
+
     const getCount = require('./routes/GetCount')();
     router.get(`/${resourceName}/count`, getCount);
 
