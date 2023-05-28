@@ -38,7 +38,7 @@ const AWSWrapper = {
         // const type = base64.split(';')[0].split('/')[1];
 
         const base64Data = new Buffer.from(base64, 'base64');
-        const type = 'jpg';
+        const type = 'png';
 
         const uuid = crypto.randomUUID();
       
@@ -47,7 +47,7 @@ const AWSWrapper = {
           Key: `${uuid}.${type}`, // type is not required
           Body: base64Data,
           ACL: 'public-read',
-          ContentEncoding: 'base64', // required
+          // ContentEncoding: 'base64', // required
           ContentType: `image/${type}` // required. Notice the back ticks
         }
       
