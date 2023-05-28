@@ -4,7 +4,7 @@ const FavoriteModel = require.main.require('./models/FavoriteModel');
 const LikeModel = require.main.require('./models/LikeModel');
 
 const RenderController = {
-    insertRender: async (image, count, prompt, negativePrompt, sampler, cfg, style, headers) => {    
+    insertRender: async (image, count, prompt, negativePrompt, sampler, cfg, style, aspectRatio, headers) => {    
         let data, error, response;
         try {
             const Render = new RenderModel();
@@ -19,6 +19,7 @@ const RenderController = {
             Render.cfg = cfg;
             Render.style = style;
             Render.count = count;
+            Render.aspectRatio = aspectRatio;
 
             response = await Render.save()
             if (response) {

@@ -11,6 +11,7 @@ const RenderSchema = new Schema({
     sampler: String,
     cfg: Number,
     style: String,
+    aspectRatio: String,
     count: Number,
     id: {
         type: String,

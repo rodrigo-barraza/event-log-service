@@ -46,6 +46,7 @@ const GetRender = () => {
                         id: getRender.data.id,
                         like: getRender.data.like,
                         likes: getRender.data.likes,
+                        aspectRatio: getRender.data.aspectRatio,
                     }
                     response.sendSuccessData(latestRendersObject)
                 } else {
@@ -65,6 +66,7 @@ const GetRender = () => {
                         id: getRandom.data.id,
                         like: getRandom.data.like,
                         likes: getRandom.data.likes,
+                        aspectRatio: getRandom.data.aspectRatio,
                     }
                     response.sendSuccessData(latestRendersObject)
                 }

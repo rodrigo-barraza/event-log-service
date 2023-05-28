@@ -22,7 +22,8 @@ const PostRender = () => {
             sampler: request.body('sampler'),
             cfg: request.body('cfg'),
             style: request.body('style'),
-            negative_prompt: request.body('negativePrompt'),
+            negativePrompt: request.body('negativePrompt'),
+            aspectRatio: request.body('aspectRatio')
         }
 
         function verifyParameters() {
@@ -36,19 +37,15 @@ const PostRender = () => {
         async function postRender() {
             try {
                 let fullPrompt = body.prompt;
-                let fullNegativePrompt = body.negative_prompt;
+                let fullNegativePrompt = body.negativePrompt;
 
                 const stylePrompt = body.style ? StyleCollection.find(style => style.value === body.style) : '';
                 if (stylePrompt.prompt) {
                     fullPrompt = ` ${stylePrompt.prompt}, ${body.prompt}`;
                 }
                 if (stylePrompt.negativePrompt) {
-                    fullNegativePrompt = `${stylePrompt.negativePrompt}, ${body.negative_prompt}`;
+                    fullNegativePrompt = `${stylePrompt.negativePrompt}, ${body.negativePrompt}`;
                 }
-
-                const myHeaders = new Headers({
-                    'Content-Type': 'application/json'
-                })
                 const requestBody = {
                     prompt: fullPrompt,
                     negative_prompt: fullNegativePrompt,
@@ -59,7 +56,20 @@ const PostRender = () => {
                     sampler_name: body.sampler,
                     cfg_scale: body.cfg,
                 };
+                if (body.aspectRatio === 'portrait') {
+                    requestBody.width = 768;
+                    requestBody.height = 960;
+                } else if (body.aspectRatio === 'landscape') {
+                    requestBody.width = 960;
+                    requestBody.height = 768;
+                } else if (body.aspectRatio === 'square') {
+                    requestBody.width = 768;
+                    requestBody.height = 768;
+                }
                 const stringifiedRequestBody = JSON.stringify(requestBody);
+                const myHeaders = new Headers({
+                    'Content-Type': 'application/json'
+                })
                 const requestOptions = {
                     method: 'POST',
                     headers: myHeaders,
@@ -85,10 +95,11 @@ const PostRender = () => {
                     imageUrl.replace('s3.us-west-2.amazonaws.com/', '').replace('generations.rod.dev', 'renders.rod.dev'),
                     count, 
                     body.prompt, 
-                    body.negative_prompt, 
+                    body.negativePrompt, 
                     body.sampler, 
                     body.cfg, 
                     body.style, 
+                    body.aspectRatio, 
                     headers)
                 const renderResponse = {
                     // image: base64Image,
@@ -99,7 +110,8 @@ const PostRender = () => {
                     sampler: insertRender.data.sampler,
                     createdAt: insertRender.data.createdAt,
                     count: count,
-                    id: insertRender.data.id
+                    id: insertRender.data.id,
+                    aspectRatio: insertRender.data.aspectRatio,
                 }
                 response.sendSuccessData(renderResponse)
             } catch (err) {
