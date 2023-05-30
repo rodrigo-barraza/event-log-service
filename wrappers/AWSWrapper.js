@@ -77,7 +77,7 @@ const AWSWrapper = {
             console.log(error)
         }
       
-        return { image, thumbnail };
+        return { id, image, thumbnail };
     },
     uploadImageThumbnail: async (base64, imageName) => {
       const { AWS_S3_ACCESS_KEY_ID, AWS_S3_SECRET_ACCESS_KEY, AWS_REGION, AWS_S3_BUCKET } = process.env;

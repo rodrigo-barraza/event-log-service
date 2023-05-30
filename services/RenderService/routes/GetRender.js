@@ -36,7 +36,6 @@ const GetRender = () => {
                 const getRender = await RenderController.getRenderById(query.id, headers.ip)
                 if (getRender.data) {
                     const renderObject = RenderController.createRenderObject(getRender.data);
-                    console.log(renderObject)
                     response.sendSuccessData(renderObject)
                 } else {
                     response.sendError('No render found.')
