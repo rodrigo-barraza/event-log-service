@@ -90,9 +90,11 @@ const PostRender = () => {
             try {
                 let countRenders = await RenderController.countRenders()
                 const count = countRenders.data + 1;
-                let imageUrl = await AWSWrapper.imageUploadBase64(base64Image)
+                let { id, image, thumbnail } = await AWSWrapper.uploadImage(base64Image)
                 let insertRender = await RenderController.insertRender(
-                    imageUrl.replace('s3.us-west-2.amazonaws.com/', '').replace('generations.rod.dev', 'renders.rod.dev'),
+                    id,
+                    image,
+                    thumbnail,
                     count, 
                     body.prompt, 
                     body.negativePrompt, 
@@ -101,19 +103,8 @@ const PostRender = () => {
                     body.style, 
                     body.aspectRatio, 
                     headers)
-                const renderResponse = {
-                    // image: base64Image,
-                    image: insertRender.data.image,
-                    style: insertRender.data.style,
-                    cfg: insertRender.data.cfg,
-                    prompt: insertRender.data.prompt,
-                    sampler: insertRender.data.sampler,
-                    createdAt: insertRender.data.createdAt,
-                    count: count,
-                    id: insertRender.data.id,
-                    aspectRatio: insertRender.data.aspectRatio,
-                }
-                response.sendSuccessData(renderResponse)
+                const renderObject = RenderController.createRenderObject(insertRender.data);
+                response.sendSuccessData(renderObject)
             } catch (err) {
                 console.log(err)
             }

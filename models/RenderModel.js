@@ -6,6 +6,7 @@ const RenderSchema = new Schema({
     local: String,
     session: String,
     image: String,
+    thumbnail: String,
     prompt: String,
     negativePrompt: String,
     sampler: String,

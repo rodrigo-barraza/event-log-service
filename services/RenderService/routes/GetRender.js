@@ -34,41 +34,18 @@ const GetRender = () => {
         async function getRender() {
             if (query.id) {
                 const getRender = await RenderController.getRenderById(query.id, headers.ip)
-                if (getRender?.data) {
-                    const latestRendersObject = {
-                        image: getRender.data.image,
-                        style: getRender.data.style,
-                        cfg: getRender.data.cfg,
-                        prompt: getRender.data.prompt,
-                        sampler: getRender.data.sampler,
-                        createdAt: getRender.data.createdAt,
-                        count: getRender.data.count,
-                        id: getRender.data.id,
-                        like: getRender.data.like,
-                        likes: getRender.data.likes,
-                        aspectRatio: getRender.data.aspectRatio,
-                    }
-                    response.sendSuccessData(latestRendersObject)
+                if (getRender.data) {
+                    const renderObject = RenderController.createRenderObject(getRender.data);
+                    console.log(renderObject)
+                    response.sendSuccessData(renderObject)
                 } else {
                     response.sendError('No render found.')
                 }
             } else {
                 const getRandom = await RenderController.getRandomWithLikes(query.id, headers.ip)
                 if (getRandom.data) {
-                    const latestRendersObject = {
-                        image: getRandom.data.image,
-                        style: getRandom.data.style,
-                        cfg: getRandom.data.cfg,
-                        prompt: getRandom.data.prompt,
-                        sampler: getRandom.data.sampler,
-                        createdAt: getRandom.data.createdAt,
-                        count: getRandom.data.count,
-                        id: getRandom.data.id,
-                        like: getRandom.data.like,
-                        likes: getRandom.data.likes,
-                        aspectRatio: getRandom.data.aspectRatio,
-                    }
-                    response.sendSuccessData(latestRendersObject)
+                    const renderObject = RenderController.createRenderObject(getRandom.data);
+                    response.sendSuccessData(renderObject)
                 }
             }
         }
