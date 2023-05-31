@@ -383,11 +383,10 @@ const RenderController = {
 	},
 	getRandomRenders: async (limit = 1) => {
 			let data, error, response;
-			let sizeLimit = limit <= 12 ? limit : 12;
 			try {
 					response = await RenderModel.aggregate([
 							{ $match: { deleted: { $ne: true } } },
-							{ $sample: { size: Number(sizeLimit) }}
+							{ $sample: { size: Number(limit) }}
 					]);
 					if (response) {
 							data = response
