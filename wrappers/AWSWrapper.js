@@ -60,10 +60,10 @@ const AWSWrapper = {
       
         const params2 = {
           Bucket: AWS_S3_BUCKET,
-          Key: `thumbnails/${id}.${type}`, // type is not required
+          Key: `thumbnails/${id}.jpeg`,
           Body: await SharpWrapper.resizeAndCompress(base64Data),
           ACL: 'public-read',
-          ContentType: `image/${type}` // required. Notice the back ticks
+          ContentType: 'image/jpeg'
         }
       
         let thumbnail = '';
