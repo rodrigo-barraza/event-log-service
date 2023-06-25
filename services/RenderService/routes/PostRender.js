@@ -5,6 +5,7 @@ const RequestClass = require.main.require('./classes/RequestClass');
 const RenderController = require.main.require('./controllers/RenderController');
 const AWSWrapper = require.main.require('./wrappers/AWSWrapper');
 const StyleCollection = require.main.require('./collections/StyleCollection');
+const StableDiffusionApiLibrary = require.main.require('./libraries/StableDiffusionApiLibrary');
 
 const PostRender = () => {
     return (req, res) => {
@@ -35,53 +36,10 @@ const PostRender = () => {
             }
         }
         async function postRender() {
-            try {
-                let fullPrompt = body.prompt;
-                let fullNegativePrompt = body.negativePrompt;
-
-                const stylePrompt = body.style ? StyleCollection.find(style => style.value === body.style) : '';
-                if (stylePrompt.prompt) {
-                    fullPrompt = ` ${stylePrompt.prompt}, ${body.prompt}`;
-                }
-                if (stylePrompt.negativePrompt) {
-                    fullNegativePrompt = `${stylePrompt.negativePrompt}, ${body.negativePrompt}`;
-                }
-                const requestBody = {
-                    prompt: fullPrompt,
-                    negative_prompt: fullNegativePrompt,
-                    steps: 25,
-                    batch_size: 1,
-                    width: 768,
-                    height: 768,
-                    sampler_name: body.sampler,
-                    cfg_scale: body.cfg,
-                };
-                if (body.aspectRatio === 'portrait') {
-                    requestBody.width = 768;
-                    requestBody.height = 960;
-                } else if (body.aspectRatio === 'landscape') {
-                    requestBody.width = 960;
-                    requestBody.height = 768;
-                } else if (body.aspectRatio === 'square') {
-                    requestBody.width = 768;
-                    requestBody.height = 768;
-                }
-                const stringifiedRequestBody = JSON.stringify(requestBody);
-                const myHeaders = new Headers({
-                    'Content-Type': 'application/json'
-                })
-                const requestOptions = {
-                    method: 'POST',
-                    headers: myHeaders,
-                    body: stringifiedRequestBody,
-                    redirect: 'follow'
-                };
-                const postTxt2ImgResponse = await fetch(`${process.env.RENDER_API}/sdapi/v1/txt2img`, requestOptions)
-                const postTxt2ImgResult = await postTxt2ImgResponse.text()
-                const parsedPostTxt2ImgResult = JSON.parse(postTxt2ImgResult)
-                parsedPostTxt2ImgResult.info = JSON.parse(parsedPostTxt2ImgResult.info)
-                EventEmitter.emit('insertRender', parsedPostTxt2ImgResult.images[0]);
-            } catch (error) {
+            const { data, error, res } = await StableDiffusionApiLibrary.postTxt2Img(body.prompt, body.negativePrompt, body.sampler, body.cfg, body.style, body.aspectRatio);
+            if (data) {
+                EventEmitter.emit('insertRender', data.images[0]);
+            } else if (error) {
                 response.sendError(error)
             }
         }

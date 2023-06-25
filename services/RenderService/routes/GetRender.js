@@ -1,7 +1,4 @@
 'use strict';
-
-const { get } = require('http');
-
 const EventsEventEmitter = require('events').EventEmitter;
 const ResponseClass = require.main.require('./classes/ResponseClass');
 const RequestClass = require.main.require('./classes/RequestClass');
