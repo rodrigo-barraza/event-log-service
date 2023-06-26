@@ -18,6 +18,9 @@ const RenderService = (router) => {
 
     const getCount = require('./routes/GetCount')();
     router.get(`/${resourceName}/count`, getCount);
+    
+    const getStatus = require('./routes/GetStatus')();
+    router.get(`/${resourceName}/status`, getStatus);
 
     // const updateRenders = require('./routes/UpdateRenders')();
     // router.patch(`/${resourceName}/renders`, updateRenders);

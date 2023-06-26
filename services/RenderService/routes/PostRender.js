@@ -35,6 +35,7 @@ const PostRender = () => {
                 return response.sendError('Missing required parameters.');
             }
         }
+        
         async function postRender() {
             const { data, error, res } = await StableDiffusionApiLibrary.postTxt2Img(body.prompt, body.negativePrompt, body.sampler, body.cfg, body.style, body.aspectRatio);
             if (data) {
@@ -64,7 +65,7 @@ const PostRender = () => {
                 const renderObject = RenderController.createRenderObject(insertRender.data);
                 response.sendSuccessData(renderObject)
             } catch (err) {
-                console.log(err)
+                response.sendError(error)
             }
         }
 

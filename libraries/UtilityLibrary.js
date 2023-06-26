@@ -17,11 +17,11 @@ const UtilityLibrary = {
         let width = 768;
         let height = 768;
         if (aspectRatio === 'portrait') {
-            requestBody.width = 768;
-            requestBody.height = 960;
+            width = 768;
+            height = 960;
         } else if (aspectRatio === 'landscape') {
-            requestBody.width = 960;
-            requestBody.height = 768;
+            width = 960;
+            height = 768;
         }
         return {width, height};
     }
