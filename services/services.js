@@ -7,6 +7,7 @@ const LikeService = require('./LikeService/LikeService');
 const RenderService = require('./RenderService/RenderService');
 const HealthCheckService = require('./HealthCheckService/HealthCheckService');
 const GuestService = require('./GuestService/GuestService');
+const GymService = require('./GymService/GymService');
 
 const routes = () => {
     EventService(router);
@@ -15,6 +16,7 @@ const routes = () => {
     LikeService(router);
     HealthCheckService(router);
     GuestService(router);
+    GymService(router);
     return router;
 };
 
