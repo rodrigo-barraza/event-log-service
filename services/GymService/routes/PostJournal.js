@@ -21,7 +21,13 @@ const PostJournal = () => {
             reps: request.body('reps'),
             weight: request.body('weight'),
             unit: request.body('unit'),
+            style: request.body('style'),
+            stance: request.body('stance'),
+            equipment: request.body('equipment'),
+            position: request.body('position'),
         }
+
+        console.log(body)
 
         function verifyParameters() {
             const hasRequiredParameters = headers.ip
@@ -37,12 +43,15 @@ const PostJournal = () => {
         async function insertJournal() {
             try {
                 let insertJournal = await JournalController.insertJournal(
-                    body.day,
+                    headers,
                     body.exercise,
                     body.reps,
                     body.weight,
                     body.unit,
-                    headers)
+                    body.style,
+                    body.stance,
+                    body.equipment,
+                    body.position)
                 response.sendSuccessData(insertJournal.data)
             } catch (err) {
                 response.sendError(error)

@@ -14,10 +14,7 @@ const GetJournal = () => {
             session: request.headers('session'),
             local: request.headers('local'),
         };
-
-        const body = {
-        }
-
+        
         function verifyParameters() {
             const hasRequiredParameters = headers.ip;
             if (hasRequiredParameters) {
@@ -29,13 +26,7 @@ const GetJournal = () => {
 
         async function getJournal() {
             try {
-                let getJournal = await JournalController.getJournal(
-                    body.day,
-                    body.exercise,
-                    body.reps,
-                    body.weight,
-                    body.unit,
-                    headers)
+                let getJournal = await JournalController.getJournal()
                 response.sendSuccessData(getJournal.data)
             } catch (err) {
                 response.sendError(error)

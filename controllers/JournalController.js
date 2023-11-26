@@ -2,7 +2,7 @@
 const JournalModel = require.main.require('./models/JournalModel');
 
 const JournalController = {
-    getJournal: async (headers) => {
+    getJournal: async () => {
         let data, error, response;
         try {
             response = await JournalModel.find({}).sort({
@@ -16,7 +16,7 @@ const JournalController = {
         }
         return { data, error, response }
     },
-    insertJournal: async (day, exercise, reps, weight, unit, headers) => {
+    insertJournal: async (headers, exercise, reps, weight, unit, style, stance, equipment, position) => {
         let data, error, response;
         try {
             const Journal = new JournalModel();
@@ -25,11 +25,15 @@ const JournalController = {
             Journal.userAgent = headers.userAgent
             Journal.session = headers.session;
 
-            Journal.day = day;
             Journal.exercise = exercise;
             Journal.reps = reps;
             Journal.weight = weight;
             Journal.unit = unit;
+            Journal.style = style;
+            Journal.stance = stance;
+            Journal.equipment = equipment;
+            Journal.position = position;
+
 
             response = await Journal.save()
             if (response) {

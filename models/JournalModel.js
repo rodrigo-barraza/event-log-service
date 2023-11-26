@@ -21,6 +21,10 @@ const JournalSchema = new Schema({
     reps: Number,
     weight: Number,
     unit: String,
+    style: String,
+    stance: String,
+    equipment: String,
+    position: String,
     
     versionKey: false,
 },{
